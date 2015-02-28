@@ -1,0 +1,7 @@
+D:\Source\Projects\HaugenApps\HaugenApps.Validation\src\HaugenApps.Validation\HaugenApps.Validation\bin\Release\HaugenApps.Validation.dll
+D:\Source\Projects\HaugenApps\HaugenApps.Validation\src\HaugenApps.Validation\HaugenApps.Validation\bin\Release\HaugenApps.Validation.pdb
+D:\Source\Projects\HaugenApps\HaugenApps.Validation\src\HaugenApps.Validation\HaugenApps.Validation\bin\Release\HaugenApps.ChangeTracking.dll
+D:\Source\Projects\HaugenApps\HaugenApps.Validation\src\HaugenApps.Validation\HaugenApps.Validation\bin\Release\HaugenApps.HaugenCore.dll
+D:\Source\Projects\HaugenApps\HaugenApps.Validation\src\HaugenApps.Validation\HaugenApps.Validation\obj\Release\HaugenApps.Validation.csprojResolveAssemblyReference.cache
+D:\Source\Projects\HaugenApps\HaugenApps.Validation\src\HaugenApps.Validation\HaugenApps.Validation\obj\Release\HaugenApps.Validation.dll
+D:\Source\Projects\HaugenApps\HaugenApps.Validation\src\HaugenApps.Validation\HaugenApps.Validation\obj\Release\HaugenApps.Validation.pdb
