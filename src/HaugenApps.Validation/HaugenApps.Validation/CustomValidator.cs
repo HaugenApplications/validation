@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using HaugenApps.ChangeTracking;
 using HaugenApps.HaugenCore;
 
 namespace HaugenApps.Validation
@@ -17,6 +18,20 @@ namespace HaugenApps.Validation
         }
 
         public abstract IEnumerable<ValidationError> Validate(Dictionary<PropertyInfo, object> vals);
+
+        public IEnumerable<ValidationError> Validate(object Instance)
+        {
+            if (!this.Type.IsInstanceOfType(Instance))
+                throw new ArgumentException("Instance type must be in validator's type hierarchy.");
+
+            return Validate(new PropertyWatcher(this.Type, Instance));
+        }
+        public IEnumerable<ValidationError> Validate(PropertyWatcher PropertyWatcher)
+        {
+            var vals = PropertyWatcher.GetValues().ToDictionary(c => c.Key, c => c.Value);
+
+            return Validate(vals);
+        }
     }
 
     public abstract class ListCustomValidator : CustomValidator

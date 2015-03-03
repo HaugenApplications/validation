@@ -9,19 +9,16 @@ using HaugenApps.Validation.BuiltInValidators;
 
 namespace HaugenApps.Validation
 {
-    public class Validator
+    public class Validator : CustomValidator
     {
-        public Validator(Type type)
+        public Validator(Type type) : base(type)
         {
-            this._type = type;
-            this._required = new RequiredValidator(this._type);
-            this._notNull = new NotNullValidator(this._type);
+            this._required = new RequiredValidator(this.Type);
+            this._notNull = new NotNullValidator(this.Type);
         }
 
         private readonly RequiredValidator _required;
         private readonly NotNullValidator _notNull;
-
-        private readonly Type _type;
 
         private readonly List<CustomValidator> _validators = new List<CustomValidator>();
 
@@ -46,42 +43,39 @@ namespace HaugenApps.Validation
         }
         protected Validator StringLength(int? MinimumLength, int? MaximumLength, IEnumerable<PropertyInfo> Fields, bool VerifyType)
         {
-            AddValidators(new StringLengthValidator(MinimumLength, MaximumLength, this._type).Add(Fields, VerifyType));
+            AddValidators(new StringLengthValidator(MinimumLength, MaximumLength, this.Type).Add(Fields, VerifyType));
 
             return this;
         }
         protected Validator DateRange(DateTime? Minimum, DateTime? Maximum, IEnumerable<PropertyInfo> Fields, bool VerifyType)
         {
-            AddValidators(new DateRangeValidator(Minimum, Maximum, this._type).Add(Fields, VerifyType));
+            AddValidators(new DateRangeValidator(Minimum, Maximum, this.Type).Add(Fields, VerifyType));
 
             return this;
         }
         protected Validator DateRange(Func<DateTime> Minimum, Func<DateTime> Maximum, IEnumerable<PropertyInfo> Fields, bool VerifyType)
         {
-            AddValidators(new DateRangeValidator(Minimum, Maximum, this._type).Add(Fields, VerifyType));
+            AddValidators(new DateRangeValidator(Minimum, Maximum, this.Type).Add(Fields, VerifyType));
 
             return this;
         }
 
-        public IEnumerable<ValidationError> Validate(PropertyWatcher PropertyWatcher)
+        protected Validator HonorDataAnnotations()
         {
-            var vals = PropertyWatcher.GetValues().ToDictionary(c => c.Key, c => c.Value);
+            return HonorDataAnnotations(this.Type.GetProperties(), false);
+        }
+        protected Validator HonorDataAnnotations(IEnumerable<PropertyInfo> Fields, bool VerifyType)
+        {
+            AddValidators(new DataAnnotationValidator(this.Type).Add(Fields, VerifyType));
 
-            return Validate(vals);
+            return this;
         }
 
-        protected virtual IEnumerable<ValidationError> Validate(Dictionary<PropertyInfo, object> vals)
+        public override IEnumerable<ValidationError> Validate(Dictionary<PropertyInfo, object> vals)
         {
             return this._required.Validate(vals).Concat(this._notNull.Validate(vals)).Concat(this._validators.SelectMany(c => c.Validate(vals)));
         }
 
-        public IEnumerable<ValidationError> Validate(object Instance)
-        {
-            if (!this._type.IsInstanceOfType(Instance))
-                throw new ArgumentException("Instance type must be in validator's type hierarchy.");
-
-            return Validate(new PropertyWatcher(this._type, Instance));
-        }
     }
     public class Validator<T> : Validator
     {
@@ -119,6 +113,15 @@ namespace HaugenApps.Validation
         public Validator<T> DateRange(Func<DateTime> Minimum, Func<DateTime> Maximum, params Expression<Func<T, DateTime?>>[] Fields)
         {
             return (Validator<T>)DateRange(Minimum, Maximum, Fields.Select(Reflection.GetPropertyInfo), false);
+        }
+
+        public new Validator<T> HonorDataAnnotations()
+        {
+            return (Validator<T>)base.HonorDataAnnotations();
+        }
+        public Validator<T> HonorDataAnnotations(params Expression<Func<T, DateTime?>>[] Fields)
+        {
+            return (Validator<T>)HonorDataAnnotations(Fields.Select(Reflection.GetPropertyInfo), false);
         }
 
         public IEnumerable<ValidationError> Validate(PropertyWatcher<T> PropertyWatcher)

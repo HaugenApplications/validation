@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
@@ -117,6 +118,34 @@ namespace HaugenApps.Validation.BuiltInValidators
             {
                 get { return "Date was out of the expected range."; }
             }
+        }
+    }
+
+    public class DataAnnotationValidator : IndividualFieldCustomValidator<object>
+    {
+        public DataAnnotationValidator(Type type) : base(type)
+        {
+        }
+
+        public override IEnumerable<ValidationError> Validate(PropertyInfo Property, object Value)
+        {
+            return Property.GetCustomAttributes<ValidationAttribute>().Where(c => !c.IsValid(Value)).Select(c => new DataAnnotationValidationError(c, Property));
+        }
+
+        public class DataAnnotationValidationError : ValidationError
+        {
+            public DataAnnotationValidationError(ValidationAttribute attribute, PropertyInfo Property)
+                : base(Property)
+            {
+                this.Attribute = attribute;
+            }
+
+            protected override string ErrorDescription
+            {
+                get { return this.Attribute.FormatErrorMessage(this.Property.Name); }
+            }
+
+            public ValidationAttribute Attribute { get; private set; }
         }
     }
 }

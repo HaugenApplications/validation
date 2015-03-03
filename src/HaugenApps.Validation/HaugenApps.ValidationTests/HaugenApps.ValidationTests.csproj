@@ -43,6 +43,7 @@
       <HintPath>..\packages\HaugenApps.HaugenCore.0.1.1\lib\HaugenApps.HaugenCore.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">

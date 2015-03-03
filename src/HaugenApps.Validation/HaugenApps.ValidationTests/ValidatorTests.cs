@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using HaugenApps.ChangeTracking;
 using HaugenApps.Validation;
@@ -11,6 +12,7 @@ namespace HaugenApps.ValidationTests
     {
         class TestClass
         {
+            [Range(1, 19)]
             public int IntegerProperty { get; set; }
             public string StringProperty { get; set; }
             public DateTime DateTimeProperty { get; set; }
@@ -40,6 +42,25 @@ namespace HaugenApps.ValidationTests
 
             Assert.AreEqual(1, ret.Count, "Incorrect validation error count!");
             Assert.AreEqual("DateTimeProperty", ret[0].Property.Name);
+        }
+
+        [TestMethod]
+        public void DataAnnotationTest()
+        {
+            var propWatch = new PropertyWatcher<TestClass>();
+
+            propWatch.Set(c => c.IntegerProperty, 25);
+
+            var ret = propWatch.Validate(x => x.HonorDataAnnotations()).ToList();
+
+            Assert.AreEqual(1, ret.Count, "Incorrect validation error count!");
+            Assert.AreEqual("IntegerProperty", ret[0].Property.Name);
+
+            propWatch.Set(c => c.IntegerProperty, 5);
+
+            ret = propWatch.Validate(x => x.HonorDataAnnotations()).ToList();
+
+            Assert.AreEqual(0, ret.Count, "Validation error occurred.");
         }
     }
 }

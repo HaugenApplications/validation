@@ -37,6 +37,7 @@
       <HintPath>..\packages\HaugenApps.HaugenCore.0.1.1\lib\HaugenApps.HaugenCore.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,6 +48,7 @@
   <ItemGroup>
     <Compile Include="BuiltInValidators.cs" />
     <Compile Include="CustomValidator.cs" />
+    <Compile Include="DataAnnotationValidator.cs" />
     <Compile Include="PropertyWatcherExtensions.cs" />
     <Compile Include="ValidationError.cs" />
     <Compile Include="Validator.cs" />
